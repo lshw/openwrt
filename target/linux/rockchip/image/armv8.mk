@@ -223,6 +223,17 @@ define Device/pine64_rockpro64
 endef
 TARGET_DEVICES += pine64_rockpro64
 
+define Device/iflyhome_i01
+  $(Device/rk3328)
+  DEVICE_VENDOR := iFLYHOME
+  DEVICE_MODEL := rk3328-box-i01
+  DEVICE_DTS := rk3328-iflyhome-i01
+  UBOOT_DEVICE_NAME := iflyhome-i01-rk3328
+  DEVICE_PACKAGES := u-boot-iflyhome-i01-rk3328 kmod-rtw88-8822cs wpad-basic-mbedtls
+  BOOT_SCRIPT := iflyhome-i01
+endef
+TARGET_DEVICES += iflyhome_i01
+
 define Device/radxa_cm3-io
   $(Device/rk3566)
   DEVICE_VENDOR := Radxa
