@@ -99,6 +99,13 @@ define U-Boot/rock64-rk3328
     pine64_rock64
 endef
 
+define U-Boot/iflyhome-i01-rk3328
+  $(U-Boot/rk3328/Default)
+  NAME:=iFLYHOME I01
+  BUILD_DEVICES:= \
+    iflyhome_i01
+endef
+
 define U-Boot/rock-pi-e-rk3328
   $(U-Boot/rk3328/Default)
   NAME:=ROCK Pi E
@@ -425,6 +432,7 @@ UBOOT_TARGETS := \
   orangepi-r1-plus-lts-rk3328 \
   roc-cc-rk3328 \
   rock64-rk3328 \
+  iflyhome-i01-rk3328 \
   rock-pi-e-rk3328 \
   rock-pi-e-v3-rk3328 \
   hinlink-h28k-rk3528 \
