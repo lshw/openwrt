@@ -73,11 +73,10 @@ diff -uNra a/arch/arm/dts/rk3328-iflyhome-i01-u-boot.dtsi b/arch/arm/dts/rk3328-
 +    bootph-pre-sram;
 +    bootph-pre-ram;
 +};
-diff -uNra a/arch/arm/mach-rockchip/rk3328/Kconfig b/arch/arm/mach-rockchip/rk3328/Kconfig
 diff -uNra a/configs/iflyhome-i01-rk3328_defconfig b/configs/iflyhome-i01-rk3328_defconfig
 --- a/configs/iflyhome-i01-rk3328_defconfig	1970-01-01 08:00:00.000000000 +0800
-+++ b/configs/iflyhome-i01-rk3328_defconfig	2026-10-05 20:56:49.203834870 +0800
-@@ -0,0 +1,122 @@
++++ b/configs/iflyhome-i01-rk3328_defconfig	2026-10-07 00:28:00.946206962 +0800
+@@ -0,0 +1,160 @@
 +CONFIG_ARM=y
 +CONFIG_SKIP_LOWLEVEL_INIT=y
 +CONFIG_COUNTER_FREQUENCY=24000000
@@ -200,7 +199,44 @@ diff -uNra a/configs/iflyhome-i01-rk3328_defconfig b/configs/iflyhome-i01-rk3328
 +CONFIG_USB_KEYBOARD=y
 +CONFIG_SYS_USB_EVENT_POLL_VIA_CONTROL_EP=y
 +CONFIG_SYS_CONFIG_NAME="iflyhome_rk3328"
-diff -uNra a/include/configs/iflyhome_rk3328.h b/include/configs/iflyhome_rk3328.h
++CONFIG_EXPO=y
++CONFIG_SD_BOOT=y
++CONFIG_CONSOLE_MUX=y
++CONFIG_CMD_NVEDIT_INFO=y
++CONFIG_CMD_MBR=y
++CONFIG_CMD_BLKMAP=y
++CONFIG_CMD_CLS=y
++CONFIG_CMD_EFIDEBUG=y
++CONFIG_CMD_VIDCONSOLE=y
++CONFIG_BLKMAP=y
++CONFIG_EFI_MEDIA=y
++CONFIG_VIDEO=y
++CONFIG_VIDEO_FONT_16X32=y
++CONFIG_VIDEO_LOGO=y
++CONFIG_BACKLIGHT=y
++CONFIG_VIDEO_PCI_DEFAULT_FB_SIZE=0x0
++CONFIG_VIDEO_DAMAGE=y
++CONFIG_BACKLIGHT_PWM=y
++CONFIG_VIDEO_BPP8=y
++CONFIG_VIDEO_ANSI=y
++CONFIG_SYS_WHITE_ON_BLACK=y
++CONFIG_VIDEO_SYNC_MS=100
++CONFIG_PANEL=y
++CONFIG_SIMPLE_PANEL=y
++CONFIG_I2C_EDID=y
++CONFIG_DISPLAY=y
++CONFIG_VIDEO_ROCKCHIP_MAX_XRES=3840
++CONFIG_VIDEO_ROCKCHIP_MAX_YRES=2160
++CONFIG_CONSOLE_SCROLL_LINES=1
++CONFIG_VIDEO_DW_HDMI=y
++CONFIG_VIDEO_LOGO_MAX_SIZE=0x100000
++CONFIG_VIDEO_BMP_RLE8=y
++CONFIG_SYS_STDIO_DEREGISTER=y
++CONFIG_SYS_CONSOLE_IS_IN_ENV=y
++CONFIG_VIDEO_BRIDGE=y
++CONFIG_PHY_ROCKCHIP_INNO_HDMI=y
++CONFIG_USE_PREBOOT=y
++CONFIG_PREBOOT="usb start"
 diff -uNra a/dts/upstream/src/arm64/rockchip/rk3328-iflyhome-i01.dts b/dts/upstream/src/arm64/rockchip/rk3328-iflyhome-i01.dts
 --- a/dts/upstream/src/arm64/rockchip/rk3328-iflyhome-i01.dts	1970-01-01 08:00:00.000000000 +0800
 +++ b/dts/upstream/src/arm64/rockchip/rk3328-iflyhome-i01.dts	2026-10-05 21:00:03.643910795 +0800
