@@ -1,0 +1,15 @@
+diff -uNra a/drivers/video/display-uclass.c c/drivers/video/display-uclass.c
+--- a/drivers/video/display-uclass.c	2025-10-07 03:13:09.000000000 +0800
++++ c/drivers/video/display-uclass.c	2026-10-07 13:48:18.498449311 +0800
+@@ -43,6 +43,11 @@
+ 	struct udevice *dev = priv;
+ 	struct dm_display_ops *ops = display_get_ops(dev);
+ 
++	/* U-Boot console does not need resolutions above 1080p */
++	if (timing->hactive.typ > 1920 ||
++	    timing->vactive.typ > 1080)
++		return false;
++
+ 	if (ops && ops->mode_valid)
+ 		return ops->mode_valid(dev, timing);
+ 
