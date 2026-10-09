@@ -1,7 +1,7 @@
 #!/bin/bash
 which swig
 if [ $? != 0 ] ; then
-	sudo apt install -y swig python3-pyelftools 
+	sudo apt install -y swig python3-pyelftools bison flex 
 fi
 make package/boot/uboot-rockchip/clean
 make package/boot/uboot-rockchip/compile V=s -j$(nproc)

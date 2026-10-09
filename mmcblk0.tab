@@ -1,0 +1,11 @@
+label: dos
+label-id: 0x5452574f
+device: /dev/mmcblk0
+unit: sectors
+sector-size: 512
+
+/dev/mmcblk0p1 : start=       65536, size=       32768, type=83, bootable
+/dev/mmcblk0p2 : start=      131072, size=      917504, type=83
+/dev/mmcblk0p3 : start=       98304, size=       32768, type=83
+/dev/mmcblk0p4 : start=     1048576, size=    29487104, type=5
+/dev/mmcblk0p5 : start=     1050624, size=    29485056, type=83
