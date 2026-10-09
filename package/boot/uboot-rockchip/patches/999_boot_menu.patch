@@ -1,0 +1,39 @@
+diff -uNra b/board/rockchip/evb_rk3328/iflyhome.env c/board/rockchip/evb_rk3328/iflyhome.env
+--- b/board/rockchip/evb_rk3328/iflyhome.env	1970-01-01 08:00:00.000000000 +0800
++++ c/board/rockchip/evb_rk3328/iflyhome.env	2026-10-10 00:56:32.346245282 +0800
+@@ -0,0 +1,14 @@
++bootdelay=5
++bootmenu_0=Boot OpenWrt=run boot_openwrt
++bootmenu_1=Boot UEFI from eMMC=run boot_uefi
++bootmenu_2=Boot USB=run boot_usb
++bootmenu_3=U-Boot Console=echo Enter console
++
++bootmenu_delay=5
++
++boot_openwrt=run distro_bootcmd
++boot_usb=usb start; run usb_boot
++boot_uefi=mmc dev 0;if fatload mmc 0:3 ${kernel_add_r} /EFI/BOOT/BOOTAA64.EFI;then bootefi ${kernel_addr_r};fi
++
++bootcmd=bootmenu
++
+diff -uNra b/configs/iflyhome-i01-rk3328_defconfig c/configs/iflyhome-i01-rk3328_defconfig
+--- b/configs/iflyhome-i01-rk3328_defconfig	2026-10-10 00:55:59.726295033 +0800
++++ c/configs/iflyhome-i01-rk3328_defconfig	2026-10-10 00:56:32.346245282 +0800
+@@ -118,7 +118,7 @@
+ CONFIG_DM_USB=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_KEYBOARD=y
+-CONFIG_SYS_USB_EVENT_POLL_VIA_CONTROL_EP=y
++CONFIG_SYS_USB_EVENT_POLL=y
+ CONFIG_SYS_CONFIG_NAME="iflyhome_rk3328"
+ CONFIG_EXPO=y
+ CONFIG_SD_BOOT=y
+@@ -158,3 +158,7 @@
+ CONFIG_PHY_ROCKCHIP_INNO_HDMI=y
+ CONFIG_USE_PREBOOT=y
+ CONFIG_PREBOOT="usb start"
++CONFIG_CMD_BOOTMENU=y
++CONFIG_AUTOBOOT_MENU_SHOW=y
++CONFIG_BOOTDELAY=5
++CONFIG_ENV_SOURCE_FILE="iflyhome"
+diff -uNra b/drivers/video/display-uclass.c c/drivers/video/display-uclass.c
