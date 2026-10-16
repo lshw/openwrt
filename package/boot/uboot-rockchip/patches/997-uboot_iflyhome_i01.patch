@@ -76,7 +76,7 @@ diff -uNra a/arch/arm/dts/rk3328-iflyhome-i01-u-boot.dtsi b/arch/arm/dts/rk3328-
 diff -uNra a/configs/iflyhome-i01-rk3328_defconfig b/configs/iflyhome-i01-rk3328_defconfig
 --- a/configs/iflyhome-i01-rk3328_defconfig	1970-01-01 08:00:00.000000000 +0800
 +++ b/configs/iflyhome-i01-rk3328_defconfig	2026-10-11 00:34:33.023363416 +0800
-@@ -0,0 +1,162 @@
+@@ -0,0 +1,164 @@
 +CONFIG_ARM=y
 +CONFIG_SKIP_LOWLEVEL_INIT=y
 +CONFIG_COUNTER_FREQUENCY=24000000
@@ -122,11 +122,13 @@ diff -uNra a/configs/iflyhome-i01-rk3328_defconfig b/configs/iflyhome-i01-rk3328
 +CONFIG_CMD_BOOTEFI=y
 +CONFIG_BLKMAP=y
 +CONFIG_EFI_LOADER=y
++CONFIG_EFI_VARIABLE_FILE_STORE=y
 +CONFIG_SPL_OF_CONTROL=y
 +CONFIG_TPL_OF_CONTROL=y
 +CONFIG_OF_SPL_REMOVE_PROPS="clock-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
 +CONFIG_TPL_OF_PLATDATA=y
 +CONFIG_ENV_IS_IN_MMC=y
++CONFIG_FAT_WRITE=y
 +CONFIG_ENV_RELOC_GD_ENV_ADDR=y
 +CONFIG_ENV_MMC_DEVICE_INDEX=1
 +CONFIG_TPL_DM=y
