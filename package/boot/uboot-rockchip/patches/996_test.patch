@@ -1,0 +1,106 @@
+[PATCH] usb: kbd: Do not require an initial HID report during probe
+USB HID 键盘初始化过程中存在不必要的强制报告读取，导致空闲状态下不主动发送 HID Report 的键盘被错误拒绝注册。
+既然首次报告不是所有键盘都能提供的，为什么要把它作为通用的 probe 成功条件？
+USB keyboard probing should not depend on receiving an initial HID input report.
+**usb: kbd: Do not require an initial HID report during probe**
+
+The USB keyboard driver currently performs a synchronous Interrupt IN transfer during probing and rejects the keyboard if the transfer fails.
+
+However, an idle keyboard may not immediately return an input report. Some keyboards only generate reports when their key state changes, even after a successful SET_IDLE request.
+
+As a result, a fully enumerated and otherwise functional keyboard may be rejected simply because no key event occurred during the initial polling period.
+
+This issue was observed with a USB keyboard (VID:PID 05af:0802) connected to the DWC3/XHCI controller on an RK3328 platform running U-Boot v2026.07.
+
+The following behavior was observed:
+
+- USB enumeration and endpoint configuration completed successfully.
+- SET_PROTOCOL and SET_IDLE both returned success.
+- The initial Interrupt IN transfer timed out with -ETIMEDOUT when no key was pressed.
+- Pressing a key during initialization allowed the transfer to complete and the keyboard to initialize successfully.
+- Changing the SET_IDLE duration did not resolve the issue.
+- Skipping the initial report check using USB_HID_QUIRK_POLL_NO_REPORT_IDLE allowed the keyboard to be detected.
+
+The existing quirks for Apple and Keychron keyboards already demonstrate that an initial input report is not a reliable prerequisite for keyboard detection.
+
+Requiring this transfer for other keyboards can lead to false probe failures and unnecessary USB initialization delays.
+
+Remove the mandatory initial input report check while preserving USB interface and endpoint validation.
+
+This avoids rejecting otherwise functional keyboards solely because they do not produce an input report while idle, improving USB keyboard compatibility and probe robustness without requiring device-specific quirks.
+
+Signed-off-by: liu shiwei <liushiwei@gmail.com>
+
+
+diff -uNra b/common/usb_kbd.c c/common/usb_kbd.c
+--- b/common/usb_kbd.c	2026-07-07 07:50:43.000000000 +0800
++++ c/common/usb_kbd.c	2026-10-18 11:49:59.315612533 +0800
+@@ -33,8 +33,6 @@
+ 
+ #define USB_VENDOR_ID_KEYCHRON	0x3434
+ 
+-#define USB_HID_QUIRK_POLL_NO_REPORT_IDLE	BIT(0)
+-
+ /*
+  * If overwrite_console returns 1, the stdin, stderr and stdout
+  * are switched to the serial port, else the settings in the
+@@ -483,7 +481,6 @@
+ 	struct usb_interface *iface;
+ 	struct usb_endpoint_descriptor *ep;
+ 	struct usb_kbd_pdata *data;
+-	unsigned int quirks = 0;
+ 	int epNum;
+ 
+ 	if (dev->descriptor.bNumConfigurations != 1)
+@@ -516,15 +513,6 @@
+ 
+ 	debug("USB KBD: found interrupt EP: 0x%x\n", ep->bEndpointAddress);
+ 
+-	switch (dev->descriptor.idVendor) {
+-	case USB_VENDOR_ID_APPLE:
+-	case USB_VENDOR_ID_KEYCHRON:
+-		quirks |= USB_HID_QUIRK_POLL_NO_REPORT_IDLE;
+-		break;
+-	default:
+-		break;
+-	}
+-
+ 	data = malloc(sizeof(struct usb_kbd_pdata));
+ 	if (!data) {
+ 		printf("USB KBD: Error allocating private data\n");
+@@ -566,13 +554,12 @@
+ #endif
+ 
+ 	/*
+-	 * Apple and Keychron keyboards do not report the device state. Reports
++	 * Some keyboards do not report the device state. Reports
+ 	 * are only returned during key presses.
+ 	 */
+-	if (quirks & USB_HID_QUIRK_POLL_NO_REPORT_IDLE) {
+-		debug("USB KBD: quirk: skip testing device state\n");
+-		return 1;
+-	}
++#ifdef CONFIG_SYS_USB_EVENT_POLL
++	debug("USB KBD: skip testing device state\n");
++#else
+ 	debug("USB KBD: enable interrupt pipe...\n");
+ #ifdef CONFIG_SYS_USB_EVENT_POLL_VIA_INT_QUEUE
+ 	data->intq = create_int_queue(dev, data->intpipe, 1,
+@@ -582,16 +569,13 @@
+ #elif defined(CONFIG_SYS_USB_EVENT_POLL_VIA_CONTROL_EP)
+ 	if (usb_get_report(dev, iface->desc.bInterfaceNumber,
+ 			   1, 0, data->new, USB_KBD_BOOT_REPORT_SIZE) < 0) {
+-#else
+-	if (usb_int_msg(dev, data->intpipe, data->new, data->intpktsize,
+-			data->intinterval, false) < 0) {
+ #endif
+ 		printf("Failed to get keyboard state from device %04x:%04x\n",
+ 		       dev->descriptor.idVendor, dev->descriptor.idProduct);
+ 		/* Abort, we don't want to use that non-functional keyboard. */
+ 		return 0;
+ 	}
+-
++#endif
+ 	/* Success. */
+ 	return 1;
+ }
