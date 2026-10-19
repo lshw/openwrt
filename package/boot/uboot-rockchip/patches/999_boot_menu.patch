@@ -7,10 +7,10 @@ diff -uNra b/board/rockchip/evb_rk3328/iflyhome.env c/board/rockchip/evb_rk3328/
 +bootmenu_1=Boot UEFI=bootefi bootmgr
 +bootmenu_2=UEFI CFG=eficonfig
 +bootmenu_3=Boot USB=usb_boot
-+bootmenu_4=U-Boot Console=echo Enter console
++bootmenu_4=U-Boot Console=env save;echo Enter console
++bootmenu_5=Switch menu 0/1=env set boot_menu_0 $bootmenu_0;env set bootmenu_0 $bootmenu_1;env set bootmenu_1 $boot_menu_0;env set boot_menu_0;env save;reset
 +
 +bootmenu_delay=5
-+
 +bootcmd=bootmenu
 +
 diff -uNra b/configs/iflyhome-i01-rk3328_defconfig c/configs/iflyhome-i01-rk3328_defconfig
